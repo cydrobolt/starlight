@@ -13,6 +13,8 @@
 - Samuel "sdamashek" Damashek
 - Chaoyi "cydrobolt" Zha
 - Fox "fwilson" Wilson
+- Srijay "skasturi" Kasturi
+
 
 ## Deployment
 - Testing on Cloud9
@@ -24,6 +26,3 @@
 - Flask
 - PostgreSQL / SQLAlchemy / MySQL
 
-https://docs.google.com/document/d/1GOgB5HyzCkpj-JvkEH4bW3LnPEKF5I5My2a8Fy07ATc/edit#
-
-^ Organisational Structure ^
