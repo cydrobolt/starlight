@@ -1,0 +1,23 @@
+body {
+    background-image: url('/static/panda.png');
+    background-size: cover;
+}
+
+.currquestion {
+    border-radius: 30px;
+    background-color: rgba(200, 200, 200, 0.5);
+    padding: 10px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.btn-lg {
+    font-size: 200%;
+    padding: 50px;
+    border-radius: 30px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+.space {
+    padding-bottom: 120px;
+}

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../static/question.css">
+    <link rel='stylesheet' type='text/css' href='../static/bootstrap-select.css'>
+{% endblock %}
+
+{% block content %}
+
+<div id='main' style='bg-color: blue; text-align: center;' class='container-fluid'>
+    <div id='currquestion' class='currquestion'>
+        <h1>Hi, I'm Starlight!</h1>
+        <img src='../static/star.gif' />
+        <h2 style='padding-bottom: 50px'>Let's get started! </h2><h2>Are you a ...</h2>
+        <a href='#' id='isgirl' height='250px' width='350px' class='btn btn-lg btn-danger'>Girl</a>&nbsp;
+        <a href='#' id='isboy' height='250px' width='350px' class='btn btn-lg btn-info'>Boy</a>
+    </div>
+<script>
+    var step = -1;
+    var next_q;
+    var gender;
+    var dcomfort;
+    var cleanliness;
+    var happiness;
+    var fun;
+    var caring;
+    var best_part;
+    var name;
+    var dfav_doc;
+    var age;
+    var dbest_part;
+    // So we collect all these, then we send these variables through AJAX to the backend
+    // note that the 'step' variable starts at 0, so you can increment that to determine which question you're on
+    function nextq () {
+            next_q = {
+                0: "<h1>Let's get to know you!</h1>\
+                    <h2>How old are you?</h2>\
+                    <select name='age' id='age' class=\"form-control\">\
+                      <option value=\"3\">3</option>\
+                      <option value=\"4\">4</option>\
+                      <option value=\"5\">5</option>\
+                      <option value=\"6\">6</option>\
+                      <option value=\"7\">7</option>\
+                      <option value=\"8\">8</option>\
+                      <option value=\"9\">9</option>\
+                      <option value=\"10\">10</option>\
+                      <option value=\"11\">11</option>\
+                      <option value=\"12\">12</option>\
+                      <option value=\"13\">13</option>\
+                      <option value=\"14\">14</option>\
+                      <option value=\"15\">15</option>\
+                      <option value=\"16\">16</option>\
+                      <option value=\"17\">17</option>\
+                      <option value=\"18\">18+</option>\
+                    </select>\
+                    <div class='space'></div>\
+                    <a href='#' id='agedone' onClick='age_done();' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
+                   ",
+                1: "<h1>You're really getting the hang of it!</h1>\
+                    <h2>What is your name?</h2>\
+                    <input type='text' name='name' id='nameb' class='form-control' width='50%'/>\
+                    <div class='space'></div>\
+                    <a href='#' id='namedone' onClick='name_done();' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
+                    ",
+                2: "<h1>Almost there!</h1>\
+                    <h2>How did the nurses and doctors make you feel?</h2>\
+                    <div class='space'></div>\
+                    <br />\
+                    <a href='#' onClick='happy_done(1);' id='happy_done' height='250px' width='350px' class='btn btn-lg btn-danger'>Very Sad</a>\
+                    <a href='#' onClick='happy_done(2);' id='happy_done' height='250px' width='350px' class='btn btn-lg btn-info'>Sad</a>\
+                    <a href='#' onClick='happy_done(3);' id='happy_done' height='250px' width='350px' class='btn btn-lg btn-info'>Neutral</a>\
+                    <a href='#' onClick='happy_done(4);' id='happy_done' height='250px' width='350px' class='btn btn-lg btn-info'>Happy</a>\
+                    <a href='#' onClick='happy_done(5);' id='happy_done' height='250px' width='350px' class='btn btn-lg btn-success'>Very Happy</a>\
+                    ",
+                3: "<h1>Closer!</h1>\
+                    <h2>How clean was the hospital?</h2>\
+                    <div class='space'></div>\
+                    <br />\
+                    <a href='#' onClick='clean_done(1);' id='clean_done' height='250px' width='350px' class='btn btn-lg btn-danger'>Very Dirty</a>\
+                    <a href='#' onClick='clean_done(2);' id='clean_done' height='250px' width='350px' class='btn btn-lg btn-info'>Dirty</a>\
+                    <a href='#' onClick='clean_done(3);' id='clean_done' height='250px' width='350px' class='btn btn-lg btn-info'>Neutral</a>\
+                    <a href='#' onClick='clean_done(4);' id='clean_done' height='250px' width='350px' class='btn btn-lg btn-info'>Clean</a>\
+                    <a href='#' onClick='clean_done(5);' id='clean_done' height='250px' width='350px' class='btn btn-lg btn-success'>Spotless</a>\
+                    ",
+                4: "<h1>Two more left, I promise!</h1>\
+                    <h2>Who was your favourite doctor?</h2>\
+                    <div class='space'></div>\
+                    <input type='text' name='favdoc' id='favdoc' class='form-control' width='50%'/>\
+                    <br />\
+                    <a href='#' onClick='fav_doc();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
+                    <a href='#' onClick='fav_doc();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Skip</a>\
+                    ",
+                5: "<h1>Last one!</h1>\
+                    <h2>What was the best part of your stay?</h2>\
+                    <div class='space'></div>\
+                    <input type='textarea' name='bestpart' id='bestpart' class='form-control' width='50%'/>\
+                    <br />\
+                    <a href='#' onClick='best_part();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
+                    <a href='#' onClick='best_part();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Skip</a>\
+                    ",
+                6: "<h1>Thanks</h1>\
+                    <h2>Thank you for helping our hospital. Your feedback is precious to us</h2>\
+                    <h2>Have a great day!</h2>\
+                    <h2>Oh, and because you have been such an amazing person, here\'s a cookie just for you :)</h2>\
+                    <img src=\"../static/cookies.jpeg\" height='512'/>\
+                    <br/>(okay, I lied, it's actually a jar of cookies)\
+                    <div class='space'></div>\
+                    <br />\
+                    ",
+            };
+            $('#currquestion').slideUp(1600, function() {
+                $('#currquestion').html(next_q[window.step]);
+                //console.log(next_q);
+                //console.log(window.step);
+            });
+
+
+            $('#currquestion').show();
+            $('#currquestion').fadeIn("slow");
+        step++;
+
+    }
+function name_done () {
+   name = $('#nameb').val();
+   nextq();
+   $('#cleanliness').slider();
+}
+function age_done () {
+   age = $('#age').val();
+   nextq();
+}
+function happy_done (ness) {
+    happiness = ness; //done
+    nextq();
+}
+function clean_done(ness) {
+   cleanliness = ness; //done
+   nextq();
+}
+function fav_doc() {
+    dfav_doc = $('#favdoc').val(); //done
+    nextq();
+}
+function best_part() {
+    dbest_part = $('#bestpart').val();
+    nextq(); //Put POSTing after best part
+    post_data();
+}
+function post_data() {
+    $.ajax({
+        url: "/endpoint",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        type: "post",
+        data: JSON.stringify({'request':'submit', 'data':{
+            name: name,
+            'questions': [
+                ['happiness',{'choice':happiness}],
+                ['cleanliness',{'choice':cleanliness}],
+                ['favourite',{'text':dfav_doc}],
+                ['age',{'text':age}],
+                ['name', {'text': name}],
+                ['best_part',{'text':dbest_part}]
+                ]
+            }}),
+        success:function(data){console.log('Successfully submitted responses');}
+    });
+}
+function comfort(ness) {
+    dcomfort = ness;
+}
+
+$(document).ready(function() {
+    $('#isgirl').click(function() {
+       gender = 'girl';
+       nextq();
+    });
+    $('#isboy').click(function() {
+       gender = 'boy';
+       nextq();
+    });
+});
+
+$(document).ready(function() {
+$('#ex1').slider({
+	formater: function(value) {
+		return 'Current value: ' + value;
+	}
+});
+});
+
+</script>
+</div>
+
+
+{% endblock %}

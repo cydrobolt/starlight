@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block head %}
+    {{ super() }}
+        <title>Starlight :: Administrative interface</title>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+        <script src="//code.jquery.com/jquery.js"></script>
+        <script src="/static/Chart.js"></script>
+{% endblock %}
+{% block content %}
+
+<div id='main' style='bg-color: blue; text-align: center;' class='container-fluid'>
+        <div class="container">
+        <h1>Starlight &ndash; Collected data</h1>
+        <div class="row row-fluid">
+            <div class="col-sm-4">
+                <h2>Happiness</h2>
+                <canvas id="freqHappiness">Sorry, your browser does not support the Starlight administrative interface.</canvas>
+            </div>
+            <div class="col-sm-4">
+                <h2>Cleanliness</h2>
+                <canvas id="freqClean"></canvas>
+            </div>
+            <div class="col-sm-4">
+                <h2>Average happiness by age</h2>
+                <canvas id="freqHappinessAge"></canvas>
+            </div>
+        </div>
+        
+        <div class="row row-fluid">
+            <div class="col-sm-12" style="text-align:left;">
+                <h2>Responses, by user</h2>
+                {% for u in i %}
+                {% for c in i[u] %}
+                {{ q[c.question_id].string }}: {{ c.answer.values()[0] }}<br /><br />
+                {% endfor %}
+                <hr />
+                {% endfor %}
+            </div>
+        </div>
+        </div>
+        <script>
+        function counts(li){
+            var l1 = 0;
+            var l2 = 0;
+            var l3 = 0;
+            var l4 = 0;
+            var l5 = 0;
+            li.forEach(function(answer){
+               if(answer['answer']['choice'] == 1) l1++;
+               if(answer['answer']['choice'] == 2) l2++;
+               if(answer['answer']['choice'] == 3) l3++;
+               if(answer['answer']['choice'] == 4) l4++;
+               if(answer['answer']['choice'] == 5) l5++;
+
+            });
+            return [l1,l2,l3,l4,l5];
+        }
+        $(document).ready(function(){
+            $.ajax({
+                url: "/endpoint",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                type: "post",
+                data: JSON.stringify({'request':'getstats'}),
+                success: function(data){
+                    console.log(data);
+                    questions = data['questions'];
+                    happiness = questions['happiness'];
+                    happiness = counts(happiness['responses']);
+                    new Chart($("#freqHappiness").get(0).getContext("2d")).Bar({
+                        labels: ["Very unhappy", "Unhappy", "Neutral", "Happy", "Very happy"],
+                        datasets: [{
+                            fillColor: "rgba(100,100,220,0.5)",
+                            strokeColor: "rgba(100,100,220,1)",
+                            data: happiness
+                        }]
+                    });
+                    cleanliness = questions['cleanliness'];
+                    cleanliness = counts(cleanliness['responses']);
+                    new Chart($("#freqClean").get(0).getContext("2d")).Bar({
+                        labels: ["Unclean", "Mostly unclean", "Neutral", "Clean", "Very clean"],
+                        datasets: [{
+                            fillColor: "rgba(100,220,100,0.5)",
+                            strokeColor: "rgba(100,220,100,1)",
+                            data: cleanliness
+                        }]
+                    });
+                    var ages = questions['age']['responses'];
+                    var happiness = questions['happiness']['responses'];
+                    var agetohappiness = {};
+                    ages.forEach(function(a){
+                        var age = a['answer']['text'];
+                        var id = a['user'];
+                        happiness.forEach(function(b){
+                           if(b['user'] == id){
+                               if(agetohappiness[age]!==undefined){
+                                   agetohappiness[age][1]+=b['answer']['choice'];
+                                   agetohappiness[age][0]+=1;
+                               }
+                               else agetohappiness[age]=[1,b['answer']['choice']];
+                           }
+                        });
+                    });
+                    var xaxis = [];
+                    var yaxis = [];
+                    for (var i=1; i<19; i++){
+                        xaxis.push(i);
+                        if(agetohappiness[i]!==undefined){
+                            var val = agetohappiness[i];
+                            yaxis.push(val[1]*1.0/val[0]);
+                        }
+                        else yaxis.push(0);
+                    }
+                    new Chart($("#freqHappinessAge").get(0).getContext("2d")).Line({
+                        labels: xaxis,
+                        datasets: [{
+                            fillColor: "rgba(100,220,100,0.5)",
+                            strokeColor: "rgba(100,220,100,1)",
+                            data: yaxis
+                        }]
+                    });
+                    }
+                });
+            
+            return false;
+        });
+            /*new Chart($("#freqHappiness").get(0).getContext("2d")).Bar({
+                labels: ["Very unhappy", "Unhappy", "Meh", "Happy", "Very happy"],
+                datasets: [{
+                    fillColor: "rgba(100,100,220,0.5)",
+                    strokeColor: "rgba(100,100,220,1)",
+                    data: [2, 4, 8, 4, 2]
+                }]
+            });
+
+            new Chart($("#freqClean").get(0).getContext("2d")).Bar({
+                labels: ["Unclean", "Mostly unclean", "Meh", "Clean", "Very clean"],
+                datasets: [{
+                    fillColor: "rgba(100, 220, 100, 0.5)",
+                    strokeColor: "rgba(100, 200, 100, 1)",
+                    data: [3, 1, 9, 2, 1]
+                }]
+            });
+
+            new Chart($("#freqFun").get(0).getContext("2d")).Bar({
+                labels: ["No fun at all", "A little fun", "Meh", "Fun", "Lots of fun"],
+                datasets: [{
+                    fillColor: "rgba(220, 100, 100, 0.5)",
+                    strokeColor: "rgba(220, 100, 100, 1)",
+                    data: [1, 10, 1, 2, 10]
+                }]
+            });
+
+            new Chart($("#ageHappiness").get(0).getContext("2d")).Bar({
+
+            })*/
+        </script>
+{% endblock %}
