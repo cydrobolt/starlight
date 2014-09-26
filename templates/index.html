@@ -36,7 +36,8 @@
             next_q = {
                 0: "<h1>Let's get to know you!</h1>\
                     <h2>How old are you?</h2>\
-                    <select name='age' id='age' class=\"form-control\">\
+                    <div style='margin:0 auto; width: 550px'>\
+                    <select name='age' id='age' class=\"form-control\" style='width:550px;height:100px;font-size:70px'>\
                       <option value=\"3\">3</option>\
                       <option value=\"4\">4</option>\
                       <option value=\"5\">5</option>\
@@ -53,13 +54,15 @@
                       <option value=\"16\">16</option>\
                       <option value=\"17\">17</option>\
                       <option value=\"18\">18+</option>\
-                    </select>\
+                    </select></div>\
                     <div class='space'></div>\
                     <a href='#' id='agedone' onClick='age_done();' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
                    ",
                 1: "<h1>You're really getting the hang of it!</h1>\
-                    <h2>What is your name?</h2>\
-                    <input type='text' name='name' id='nameb' class='form-control' width='50%'/>\
+                    <h2>What is your name?</h2><br />\
+                    <div style='margin:0 auto; width: 550px'>\
+                    <input type='text' name='name' id='nameb' class='form-control' style='width:550px;height:100px;font-size:75px'/>\
+                    </div>\
                     <div class='space'></div>\
                     <a href='#' id='namedone' onClick='name_done();' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
                     ",
@@ -85,16 +88,16 @@
                     ",
                 4: "<h1>Two more left, I promise!</h1>\
                     <h2>Who was your favourite doctor?</h2>\
-                    <div class='space'></div>\
-                    <input type='text' name='favdoc' id='favdoc' class='form-control' width='50%'/>\
-                    <br />\
+                    <div class='space'></div><div style='margin:0 auto; width: 550px'>\
+                    <input type='text' name='favdoc' id='favdoc' class='form-control' style='width:550px;height:100px;font-size:70px'/>\
+                    <br /></div>\
                     <a href='#' onClick='fav_doc();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
                     <a href='#' onClick='fav_doc();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Skip</a>\
                     ",
                 5: "<h1>Last one!</h1>\
                     <h2>What was the best part of your stay?</h2>\
-                    <div class='space'></div>\
-                    <input type='textarea' name='bestpart' id='bestpart' class='form-control' width='50%'/>\
+                    <div class='space'></div><div style='margin:0 auto; width: 550px'>\
+                    <input type='textarea' name='bestpart' id='bestpart' class='form-control' style='width:550px;height:100px;font-size:70px'/>\
                     <br />\
                     <a href='#' onClick='best_part();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Continue</a>\
                     <a href='#' onClick='best_part();' id='fav_doc' height='250px' width='350px' class='btn btn-lg btn-info'>Skip</a>\
